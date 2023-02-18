@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 
 namespace ETicaretAPI.Persistence
 {
-    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ETicaretAPIDbContext>
+    public class DesignTimeDbContextFactory : IDesignTimeDbContextFactory<ETicaretAPIDbContext> //PowerSell Üzerinden Komut yazmak için gerekli sınıf.
     {
         public ETicaretAPIDbContext CreateDbContext(string[] args)
 		{
