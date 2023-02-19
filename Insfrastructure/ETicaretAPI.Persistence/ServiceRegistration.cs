@@ -3,6 +3,7 @@ using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Persistence.Concretes;
 using ETicaretAPI.Persistence.Contexts;
 using ETicaretAPI.Persistence.Repositeries;
+using ETicaretAPI.Persistence.Repositeries.File;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using System;
@@ -26,6 +27,12 @@ namespace ETicaretAPI.Persistence
             services.AddScoped<IOrderWriteRepository, OrderWriteRepository>(); 
             services.AddScoped<IProductReadRepository, ProductReadRepository>();
 			services.AddScoped<IProductWriteRepository, ProductWriteRepository>();
+			services.AddScoped<IProductImageFileReadRepository, ProductImageFileReadRepository>();
+			services.AddScoped<IProductImageFileWriteRepository, ProductImageFileWriteRepository>();
+			services.AddScoped<IInvoiceFileReadRepository, InvoiceFileReadRepository>();
+			services.AddScoped<IInvoiceFileWriteRepository, InvoiceFileWriteRepository>();
+			services.AddScoped<IFileReadRepository, FİleReadRepository>();
+			services.AddScoped<IFileWriteRepository, FİleWriteRepository>();
 		}
     }
 }
