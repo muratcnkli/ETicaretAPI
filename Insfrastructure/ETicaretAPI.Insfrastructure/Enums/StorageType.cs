@@ -4,10 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ETicaretAPI.Domain.Entities
+namespace ETicaretAPI.Insfrastructure.Enums
 {
-	public class ProductImageFile:File
+	public enum StorageType
 	{
-		public ICollection<Product> Products { get; set; }
+		Local,
+		Azure,
+		AWS
+
 	}
 }
