@@ -143,6 +143,7 @@ namespace ETicaretAPI.API.Controllers
 			ProductImageFile productImageFile=product.ProductImageFiles.FirstOrDefault(p=>p.Id==Guid.Parse(imageId));
 			product.ProductImageFiles.Remove(productImageFile);
 			await _productWriteRepository.SaveAsync();
+
 			return Ok();
 		}
 
