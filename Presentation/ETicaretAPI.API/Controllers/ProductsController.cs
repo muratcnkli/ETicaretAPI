@@ -1,8 +1,12 @@
 ﻿using ETicaretAPI.Application.Abstractions.Storage;
+using ETicaretAPI.Application.Features.Commands.Product.CreateProduct;
+using ETicaretAPI.Application.Features.Queries.Product.GetAllProduct;
+using ETicaretAPI.Application.Features.Queries.Product.GetByIdProduct;
 using ETicaretAPI.Application.Repositories;
 using ETicaretAPI.Application.RequestParameters;
 using ETicaretAPI.Application.ViewModels.Products;
 using ETicaretAPI.Domain.Entities;
+using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -10,7 +14,7 @@ using System.Net;
 
 namespace ETicaretAPI.API.Controllers
 {
-	[Route("api/[controller]")]
+    [Route("api/[controller]")]
 	[ApiController]
 	public class ProductsController : ControllerBase
 	{
@@ -25,6 +29,7 @@ namespace ETicaretAPI.API.Controllers
 		private readonly IInvoiceFileWriteRepository _ınvoiceFileWriteRepository;
 		private readonly IStorageService _storageService;
 		private readonly IConfiguration _configuration;
+		private readonly IMediator _mediator;
 
 		public ProductsController(IProductWriteRepository productWriteRepository,
 			IProductReadRepository productReadRepository,
@@ -36,7 +41,8 @@ namespace ETicaretAPI.API.Controllers
 			IInvoiceFileReadRepository ınvoiceFileReadRepository,
 			IInvoiceFileWriteRepository ınvoiceFileWriteRepository,
 			IStorageService storageService,
-			IConfiguration configuration)
+			IConfiguration configuration,
+			IMediator mediator)
 		{
 			_productWriteRepository = productWriteRepository;
 			_productReadRepository = productReadRepository;
@@ -49,45 +55,26 @@ namespace ETicaretAPI.API.Controllers
 			_ınvoiceFileWriteRepository = ınvoiceFileWriteRepository;
 			_storageService = storageService;
 			_configuration = configuration;
+			_mediator = mediator;
 		}
 		[HttpGet]
-		public async Task<IActionResult> Get([FromQuery]Pagination pagination)
+		public async Task<IActionResult> Get([FromQuery] GetAllProductQueryRequest getAllProductQueryRequest)
 		{
-			var totalCount=_productReadRepository.GetAll(false).Count();
-			var products= _productReadRepository.GetAll(false)
-				.Skip(pagination.Page * pagination.Size)
-				.Take(pagination.Size).Select(p => new
-			{
-				p.Id,
-				p.Name,
-				p.Stock,
-				p.Price,
-				p.CreatedDate,
-				p.UpdatedDate
-			}).ToList();
-
-			return Ok(new
-			{
-				totalCount,
-				products,
-			});
+			GetAllProductQueryResponse response= await _mediator.Send(getAllProductQueryRequest);
+			return Ok(response);
+			
 		}
-		[HttpGet("{id}")]
-		public async Task<IActionResult> Get(string id)
+		[HttpGet("{Id}")]
+		public async Task<IActionResult> Get([FromRoute] GetByIdProductQueryRequest getByIdProductQueryRequest)
 		{
-			return Ok(_productReadRepository.GetByIdAsync(id,false));
+			GetByIdProductQueryResponse response = await _mediator.Send(getByIdProductQueryRequest);
+			return Ok(response);
 		}
 
 		[HttpPost]
-		public async Task<IActionResult> Post(VM_Create_Product model)
+		public async Task<IActionResult> Post(CreateProductCommandRequest createProductCommandRequest)
 		{
-			_productWriteRepository.AddAsync(new()
-			{
-				Name=model.Name,
-				Price=model.Price,
-				Stock=model.Stock	
-			});
-			await _productWriteRepository.SaveAsync();
+			CreateProductCommandResponse response= await _mediator.Send(createProductCommandRequest);
 			return StatusCode((int)HttpStatusCode.Created);
 		}
 		[HttpPut]
