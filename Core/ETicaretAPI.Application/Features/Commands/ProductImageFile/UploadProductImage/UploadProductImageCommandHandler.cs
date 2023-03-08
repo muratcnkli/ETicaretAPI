@@ -1,4 +1,7 @@
-﻿using MediatR;
+﻿using ETicaretAPI.Application.Abstractions.Storage;
+using ETicaretAPI.Application.Repositories;
+using P = ETicaretAPI.Domain.Entities;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +12,31 @@ namespace ETicaretAPI.Application.Features.Commands.ProductImageFile.UploadProdu
 {
 	public class UploadProductImageCommandHandler : IRequestHandler<UploadProductImageCommandRequest, UploadProductImageCommandResponse>
 	{
-		public Task<UploadProductImageCommandResponse> Handle(UploadProductImageCommandRequest request, CancellationToken cancellationToken)
+		readonly IStorageService _storageService;
+		readonly IProductReadRepository _productReadRepository;
+		readonly IProductImageFileWriteRepository _productImageFileWriteRepository;
+
+		public UploadProductImageCommandHandler(IProductImageFileWriteRepository productImageFileWriteRepository, IProductReadRepository productReadRepository = null, IStorageService storageService = null)
 		{
-			throw new NotImplementedException();
+			_productImageFileWriteRepository = productImageFileWriteRepository;
+			_productReadRepository = productReadRepository;
+			_storageService = storageService;
+		}
+
+		public async Task<UploadProductImageCommandResponse> Handle(UploadProductImageCommandRequest request, CancellationToken cancellationToken)
+		{
+			var datas = await _storageService.UploadAsync("files", request.Files);
+			P.Product product = await _productReadRepository.GetByIdAsync(request.Id);
+			await _productImageFileWriteRepository.AddRangeAsync(datas.Select(d => new P.ProductImageFile()
+			{
+				FileName = d.fileName,
+				Path = d.pathOrContainerName,
+				Storage = _storageService.StorageName,
+				Products = new List<P.Product>() { product }
+			}).ToList());
+			await _productImageFileWriteRepository.SaveAsync();
+			return new();
+			
 		}
 	}
 }
