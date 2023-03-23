@@ -1,4 +1,5 @@
 using ETicaretAPI.API.Configurations.ColumsWriters;
+using ETicaretAPI.API.Extensions;
 using ETicaretAPI.Application;
 using ETicaretAPI.Application.Validators.Products;
 using ETicaretAPI.Insfrastructure;
@@ -6,6 +7,7 @@ using ETicaretAPI.Insfrastructure.Filters;
 using ETicaretAPI.Insfrastructure.Services.Storage.Azure;
 using ETicaretAPI.Insfrastructure.Services.Storage.Local;
 using ETicaretAPI.Persistence;
+using ETicaretAPI.SignalR;
 using FluentValidation.AspNetCore;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.HttpLogging;
@@ -26,10 +28,11 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddPersistenceServices();
 builder.Services.AddInfrastructureServices();
 builder.Services.AddAplicationServices();
+builder.Services.AddSignalRServices();
 //builder.Services.AddStorage<LocalStorage>();
 builder.Services.AddStorage<AzureStorage>();
 builder.Services.AddCors(options => options.AddDefaultPolicy(policy =>
-	policy.WithOrigins("http://localhost:4200","https://localhost:4200").AllowAnyHeader().AllowAnyMethod()
+	policy.WithOrigins("http://localhost:4200","https://localhost:4200").AllowAnyHeader().AllowAnyMethod().AllowCredentials()
 ));
 // Log Ayarlarý
 Logger log = new LoggerConfiguration()
@@ -96,6 +99,9 @@ if (app.Environment.IsDevelopment())
 	app.UseSwagger();
 	app.UseSwaggerUI();
 }
+
+app.ConfigureExceptionHandler<Program>(app.Services.GetRequiredService<ILogger<Program>>());
+
 app.UseStaticFiles();
 
 app.UseSerilogRequestLogging();
@@ -116,5 +122,6 @@ app.Use(async (context, next) =>
 });
 
 app.MapControllers();
+app.MapHubs();
 
 app.Run();
