@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace ETicaretAPI.Application.Abstractions.Hubs
 {
-	public interface IProductHubService
+	public  interface IProductHubService
 	{
-		Task ProductAddedMessageAsync(string message);
+		 Task ProductAddedMessageAsync(string message);
 	}
 }

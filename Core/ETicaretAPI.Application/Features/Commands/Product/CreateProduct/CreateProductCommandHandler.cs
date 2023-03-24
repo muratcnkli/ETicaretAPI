@@ -14,6 +14,8 @@ namespace ETicaretAPI.Application.Features.Commands.Product.CreateProduct
 		private readonly IProductWriteRepository _productWriteRepository;
 		private readonly IProductHubService _productHubService;
 
+
+
 		public CreateProductCommandHandler(IProductWriteRepository productWriteRepository, IProductHubService productHubService)
 		{
 			_productWriteRepository = productWriteRepository;
@@ -29,7 +31,7 @@ namespace ETicaretAPI.Application.Features.Commands.Product.CreateProduct
 				Stock = request.Stock
 			});
 			await _productWriteRepository.SaveAsync();
-			await _productHubService.ProductAddedMessageAsync($"{request.Name} isminde ürün eklenmiştir." );
+			await _productHubService.ProductAddedMessageAsync($"{request.Name} isminde ürün eklenmiştir.");
 			return new ();
 		}
 	}

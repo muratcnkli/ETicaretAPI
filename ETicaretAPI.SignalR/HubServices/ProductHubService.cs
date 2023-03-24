@@ -1,4 +1,5 @@
 ﻿using ETicaretAPI.Application.Abstractions.Hubs;
+using ETicaretAPI.SignalR.Hubs;
 using Microsoft.AspNetCore.SignalR;
 using System;
 using System.Collections.Generic;
@@ -10,9 +11,9 @@ namespace ETicaretAPI.SignalR.HubServices
 {
 	public class ProductHubService : IProductHubService
 	{
-		readonly IHubContext _hubContext;
+		readonly IHubContext<ProductHub> _hubContext;
 
-		public ProductHubService(IHubContext hubContext)
+		public ProductHubService(IHubContext<ProductHub> hubContext)
 		{
 			_hubContext = hubContext;
 		}
