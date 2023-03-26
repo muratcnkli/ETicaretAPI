@@ -90,7 +90,7 @@ namespace ETicaretAPI.API.Controllers
 			RemoveProductImageCommandResponse response = await _mediator.Send(removeProductImageCommandRequest);
 			return Ok();
 		}
-		[HttpPut("[action]/{imageId}/{productId}")]
+		[HttpGet("[action]")]
 		[Authorize(AuthenticationSchemes = "Admin")]
 		
 		public async Task<IActionResult> ChangeShowcaseImage([FromQuery]ChangeShowcaseImageCommandRequest changeShowcaseImageCommandRequest)

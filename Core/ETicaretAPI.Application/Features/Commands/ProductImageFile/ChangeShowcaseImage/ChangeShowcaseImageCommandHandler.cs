@@ -28,10 +28,18 @@ namespace ETicaretAPI.Application.Features.Commands.ProductImageFile.ChangeShowc
 									p
 								});
 			var data = await query.FirstOrDefaultAsync(p=>p.p.Id==Guid.Parse(request.ProductId)&& p.pif.Showcase);
-			data.pif.Showcase = false;
+			if (data!=null)
+			{
+				data.pif.Showcase = false;
+			}
+			
 
 			var image = await query.FirstOrDefaultAsync(p=>p.pif.Id==Guid.Parse(request.ImageId));
-			image.pif.Showcase = true;
+			if (image!=null)
+			{
+				image.pif.Showcase = true;
+			}
+			//image.pif.Showcase = true;
 			await _productImageFileWriteRepository.SaveAsync();
 			return new();
 		}
