@@ -1,4 +1,5 @@
-﻿using ETicaretAPI.Domain.Entities;
+﻿using ETicaretAPI.Application.ViewModels.Baskets;
+using ETicaretAPI.Domain.Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +10,6 @@ namespace ETicaretAPI.Application.Abstractions
 {
     public interface IProductService
     {
-        List<Product> GetProducts();
+        List<Product> GetProducts( );
     }
 }
