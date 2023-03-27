@@ -18,6 +18,7 @@ namespace ETicaretAPI.API.Controllers
 
 		public BasketsController(IMediator mediator)
 		{
+
 			_mediator = mediator;
 		}
 		[HttpGet]
